@@ -393,7 +393,7 @@
 
     #frame1 .frame-main{
       display:grid;
-      grid-template-rows:auto minmax(0,1fr) auto;
+      grid-template-rows:auto minmax(0,1fr);
       gap:6px;
       align-items:stretch;
       background-image:url('images/kitchen_bg.png');
@@ -419,23 +419,25 @@
       flex-direction:column;
       justify-content:center;
       gap:4px;
-      padding:8px 8px;
+      padding:10px 8px;
+      overflow:hidden;
     }
     #frame1 .dialogue{
       font-size:12px;
+      line-height:1.15;
       min-height:0;
       margin-bottom:0;
     }
     #frame1 .order-line{
-      font-size:15px;
-      line-height:1.15;
+      font-size:14px;
+      line-height:1.12;
     }
     #frame1 .help-line{
-      font-size:12px;
-      line-height:1.2;
+      font-size:11px;
+      line-height:1.15;
       margin-top:0;
     }
-    .queue-strip{display:grid;grid-template-columns:1fr;gap:6px;width:100%}
+    .queue-strip{display:none !important}
     .queue-card{
       padding:8px 6px;
       border:2px solid var(--line);
@@ -474,14 +476,22 @@
       box-shadow:0 4px 0 rgba(60,102,150,.08);
     }
     #frame1 .big-equation{
-      font-size:1rem;
-      gap:6px;
+      font-size:.92rem;
+      gap:4px;
+      flex-wrap:nowrap;
     }
     #frame1 .equation-badge{
-      min-width:42px;
-      padding:6px 8px;
-      border-radius:12px;
+      min-width:36px;
+      padding:5px 6px;
+      border-radius:10px;
       border-width:2px;
+    }
+    #frame1 #orderMainDisplay{
+      width:100%;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      overflow:hidden;
     }
 
     #frame2 .frame-main{
@@ -1504,35 +1514,9 @@
     }
 
     function renderQueuePreview(){
-      if(currentLevel !== 5){
-        queueStrip.innerHTML = "";
-        queueStrip.style.display = "none";
-        return;
-      }
-
-      queueStrip.style.display = "grid";
-      const cards = [];
-      const remaining = levels[currentLevel].q - currentQuestionNumber + 1;
-
-      for(let i = 0; i < 3; i++){
-        const index = currentQuestionNumber - 1 + i;
-        if(index >= levels[currentLevel].q) continue;
-
-        const title = i === 0 ? "Now" : "Next";
-        const orderNo = index + 1;
-        const text = i === 0
-          ? `Order ${orderNo} of ${levels[currentLevel].q}<br>Make 10`
-          : `Order ${orderNo}<br>Get ready`;
-
-        cards.push(`<div class="queue-card ${i === 0 ? "active" : ""}"><strong>${title}</strong><br>${text}</div>`);
-      }
-
-      if(cards.length === 0){
-        cards.push(`<div class="queue-card active"><strong>Rush Complete</strong><br>Great job!</div>`);
-      }
-
-      queueStrip.innerHTML = cards.join("");
-      queueStrip.setAttribute("aria-label", `Rush status. ${remaining} orders remaining.`);
+      queueStrip.innerHTML = "";
+      queueStrip.style.display = "none";
+      return;
     }
 
     function renderOrderDisplay(){
@@ -1540,33 +1524,33 @@
       const shown = currentQuestion.shown;
       const mode = levels[currentLevel].mode;
 
-      speakerAvatar.classList.toggle("farmer", currentLevel !== 5);
-      speakerAvatar.classList.toggle("customer", currentLevel === 5);
+      speakerAvatar.classList.add("farmer");
+      speakerAvatar.classList.remove("customer");
       setAvatarImage(
         speakerAvatarImg,
         speakerAvatarFallback,
-        currentLevel === 5 ? ASSETS.images.chefNeutral : ASSETS.images.farmerNeutral,
-        currentLevel === 5 ? "👩‍🍳" : "🧑‍🌾"
+        ASSETS.images.farmerNeutral,
+        "🧑‍🌾"
       );
-      speakerTag.textContent = currentLevel === 5 ? "🍳 Breakfast Rush" : "🥚 Farmer Order";
+      speakerTag.textContent = "🥚 Farmer Order";
       orderDialogue.textContent = currentLevel === 5
-        ? "Quick! The kitchen needs trays fast!"
+        ? "Breakfast rush order"
         : "Chef says: Each tray must have 10 eggs.";
 
       if(mode === "mental" || mode === "rush"){
-        orderPrompt.textContent = mode === "rush" ? "Solve every make-10 combination." : "Solve the number bond to 10.";
+        orderPrompt.textContent = mode === "rush" ? "Solve this make-10 sum." : "Solve the number bond to 10.";
         orderMainDisplay.innerHTML = `<div class="big-equation"><span class="equation-badge">${shown}</span><span>+</span><span class="equation-badge">?</span><span>=</span><span class="equation-badge">10</span></div>`;
         orderHelpLine.textContent = mode === "rush"
-          ? "Numbers only. All combinations from 0 + 10 to 10 + 0 will be tested."
-          : "Think of 10 in your head, then choose the missing number.";
+          ? "Choose the missing number."
+          : "Think of 10, then choose the missing number.";
       } else if(mode === "memory"){
-        orderPrompt.textContent = "Look carefully. The tray will hide soon.";
+        orderPrompt.textContent = "Look carefully.";
         orderMainDisplay.innerHTML = `<div class="big-equation"><span class="equation-badge">${shown}</span><span>+</span><span class="equation-badge">?</span><span>=</span><span class="equation-badge">10</span></div>`;
-        orderHelpLine.textContent = `This tray starts with ${shown} eggs.`;
+        orderHelpLine.textContent = `${shown} eggs are showing.`;
       } else {
-        orderPrompt.textContent = "How many more eggs are needed?";
+        orderPrompt.textContent = "How many more eggs?";
         orderMainDisplay.innerHTML = `<div class="big-equation"><span class="equation-badge">${shown}</span><span>+</span><span class="equation-badge">?</span><span>=</span><span class="equation-badge">10</span></div>`;
-        orderHelpLine.textContent = `${shown} eggs are already in the tray. Choose how many more are needed.`;
+        orderHelpLine.textContent = `${shown} eggs are already there.`;
       }
 
       renderQueuePreview();
