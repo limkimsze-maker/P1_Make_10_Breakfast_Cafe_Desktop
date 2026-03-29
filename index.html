@@ -30,7 +30,12 @@
       --app-scale:1;
       --tray-size:min(100%, 560px);
       --avatar-size:170px;
+      --desktop-stage-w:1366px;
+      --desktop-stage-h:860px;
+      --desktop-stage-scale:1;
     }
+
+    .desktop-scale-wrap{display:contents;}
 
     *{box-sizing:border-box;-webkit-text-size-adjust:100%;text-size-adjust:100%}
     html,body{height:100%}
@@ -763,6 +768,35 @@
         font-family:var(--ui-font) !important;
       }
     }
+
+
+    @media (min-width: 900px){
+      body{overflow:hidden;}
+      .desktop-scale-wrap{
+        position:fixed;
+        inset:0;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        overflow:hidden;
+        padding:8px;
+        pointer-events:none;
+        z-index:1;
+      }
+      .app{
+        position:relative !important;
+        inset:auto !important;
+        width:var(--desktop-stage-w) !important;
+        height:var(--desktop-stage-h) !important;
+        max-width:none !important;
+        max-height:none !important;
+        margin:0 !important;
+        transform:scale(var(--desktop-stage-scale));
+        transform-origin:center center;
+        pointer-events:auto;
+      }
+    }
+
   </style>
   <script src="https://cdn.counter.dev/script.js" data-id="825e93b6-ce99-40ef-8bcc-125f13297433" data-utcoffset="8"></script>
 </head>
@@ -1078,6 +1112,9 @@
     const coverArt = document.getElementById("coverArt");
     const app = document.getElementById("app");
 
+    ensureDesktopScaleWrap();
+    updateDesktopScale();
+
     const playerNameText = document.getElementById("playerNameText");
     const levelText = document.getElementById("levelText");
     const qNum = document.getElementById("qNum");
@@ -1226,8 +1263,35 @@
       finalWin: ["sfx_correct.mp3", "audio/sfx_correct.mp3"]
     };
 
-    function fitApp(){
-      document.documentElement.style.setProperty("--app-scale", "1");
+    function ensureDesktopScaleWrap(){
+      let wrap = document.getElementById('desktopScaleWrap');
+      if(wrap || !app || !app.parentNode) return wrap;
+      wrap = document.createElement('div');
+      wrap.id = 'desktopScaleWrap';
+      wrap.className = 'desktop-scale-wrap';
+      app.parentNode.insertBefore(wrap, app);
+      wrap.appendChild(app);
+      return wrap;
+    }
+
+    function updateDesktopScale(){
+      ensureDesktopScaleWrap();
+      if(!window.matchMedia('(min-width: 900px)').matches){
+        document.documentElement.style.setProperty('--desktop-stage-scale', '1');
+        return;
+      }
+      const vv = window.visualViewport;
+      const viewportWidth = vv ? vv.width : window.innerWidth;
+      const viewportHeight = vv ? vv.height : window.innerHeight;
+      const designWidth = 1366;
+      const designHeight = 860;
+      const padding = 16;
+      const scale = Math.min(
+        (viewportWidth - padding) / designWidth,
+        (viewportHeight - padding) / designHeight
+      );
+      const safeScale = Math.max(0.5, Math.min(scale, 1.75));
+      document.documentElement.style.setProperty('--desktop-stage-scale', String(safeScale));
     }
 
     function cycleAudioSource(el){
@@ -2065,7 +2129,7 @@
       playerNameText.textContent = name;
       coverScreen.classList.add("hidden");
       app.classList.add("show");
-      fitApp();
+      updateDesktopScale();
       resetGameFlow();
     });
 
@@ -2155,15 +2219,15 @@
     window.addEventListener("touchstart", unlockAudio, { once:true, passive:true });
     window.addEventListener("keydown", unlockAudio, { once:true });
 
-    window.addEventListener("resize", fitApp);
-    window.addEventListener("orientationchange", fitApp);
+    window.addEventListener("resize", updateDesktopScale);
+    window.addEventListener("orientationchange", updateDesktopScale);
     if(window.visualViewport){
-      window.visualViewport.addEventListener("resize", fitApp);
-      window.visualViewport.addEventListener("scroll", fitApp);
+      window.visualViewport.addEventListener("resize", updateDesktopScale);
+      window.visualViewport.addEventListener("scroll", updateDesktopScale);
     }
 
     renderCoverTray();
-    fitApp();
+    updateDesktopScale();
     playerNameText.textContent = getPlayerName();
     coverNameInput.value = getPlayerName() === "Farmer" ? "" : getPlayerName();
     bestScoreText.textContent = getBestScore();
