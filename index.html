@@ -884,6 +884,147 @@
       }
     }
 
+
+    /* === Targeted readability update: only the red-circled areas at 1.5× on desktop === */
+    @media (min-width: 900px){
+      /* Left panel: order card text and number sentence */
+      #frame1 .dialogue{
+        font-size:16.5px !important;
+        line-height:1.2 !important;
+      }
+      #frame1 .order-line{
+        font-size:19.5px !important;
+        line-height:1.15 !important;
+      }
+      #frame1 .help-line{
+        font-size:15px !important;
+        line-height:1.18 !important;
+      }
+      #frame1 .big-equation{
+        font-size:1.38rem !important;
+        gap:6px !important;
+      }
+      #frame1 .equation-badge{
+        min-width:52px !important;
+        padding:7px 9px !important;
+        border-radius:12px !important;
+      }
+
+      /* Middle panel: preview text, number buttons, action buttons */
+      .frame2-dock{
+        grid-template-columns:118px 1fr !important;
+        gap:8px !important;
+        padding:7px !important;
+      }
+      .frame2-dock .preview-text{
+        font-size:16px !important;
+        line-height:1.1 !important;
+      }
+      .answer-btn{
+        font-size:24px !important;
+        padding:10px 3px !important;
+      }
+      .answer-btn.small{
+        font-size:20px !important;
+        padding:10px 2px !important;
+      }
+      .answer-grid .game-btn{
+        min-height:50px !important;
+      }
+      .utility-grid .game-btn{
+        font-size:19px !important;
+        line-height:1.1 !important;
+        padding:9px 4px !important;
+        min-height:50px !important;
+      }
+
+      /* Right panel: chef message, delivery labels, mission text */
+      #frame3 .bubble{
+        font-size:19px !important;
+        line-height:1.22 !important;
+        min-height:88px !important;
+        padding:10px 12px !important;
+      }
+      #frame3 .note{
+        font-size:18px !important;
+        line-height:1.2 !important;
+        padding:9px !important;
+      }
+      .delivery-stop .label{
+        font-size:15px !important;
+        line-height:1.1 !important;
+      }
+      .delivery-arrow{
+        font-size:28px !important;
+      }
+
+      /* Bottom navigation */
+      .story-cta .game-btn{
+        font-size:21px !important;
+        min-height:52px !important;
+      }
+    }
+
+  
+
+    
+/* === Equation-only update: make the left order equation bigger, red, and fit neatly === */
+@media (min-width: 900px){
+  #frame1 #orderMainDisplay{
+    width:100% !important;
+    max-width:100% !important;
+  }
+  #frame1 #orderMainDisplay .big-equation{
+    width:100% !important;
+    max-width:100% !important;
+    display:flex !important;
+    justify-content:center !important;
+    align-items:center !important;
+    flex-wrap:nowrap !important;
+    font-size:1.8rem !important;
+    gap:6px !important;
+    color:#c62828 !important;
+    line-height:1 !important;
+  }
+  #frame1 #orderMainDisplay .equation-badge{
+    min-width:0 !important;
+    width:3.1em !important;
+    padding:0.45em 0.4em !important;
+    border-radius:14px !important;
+    color:#c62828 !important;
+    border-color:#c62828 !important;
+    flex:0 1 auto !important;
+  }
+  #frame1 #orderMainDisplay span:not(.equation-badge){
+    color:#c62828 !important;
+    font-weight:900 !important;
+    flex:0 0 auto !important;
+  }
+}
+
+/* === Maximise desktop width: remove large left/right outer margins === */
+    @media (min-width: 900px){
+      .desktop-scale-wrap{
+        position:fixed !important;
+        inset:0 !important;
+        display:block !important;
+        overflow:hidden !important;
+        padding:0 !important;
+        pointer-events:none !important;
+        z-index:1 !important;
+      }
+      .app{
+        position:fixed !important;
+        inset:6px !important;
+        width:auto !important;
+        height:auto !important;
+        max-width:none !important;
+        max-height:none !important;
+        margin:0 !important;
+        transform:none !important;
+      }
+    }
+
   </style>
   <script src="https://cdn.counter.dev/script.js" data-id="825e93b6-ce99-40ef-8bcc-125f13297433" data-utcoffset="8"></script>
 </head>
