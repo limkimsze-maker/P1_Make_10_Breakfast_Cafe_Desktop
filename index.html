@@ -375,6 +375,7 @@
     .bubble-copy{min-height:100%;display:grid;align-content:center;justify-items:center;gap:8px}
     .bubble-line{max-width:100%;line-height:1.35;white-space:normal;word-break:normal;overflow-wrap:anywhere}
     .bubble-equation{font-size:1.15em;font-weight:900;white-space:nowrap}
+    .feedback-equation{display:inline-block;font-size:1.8rem;font-weight:900;line-height:1;white-space:nowrap}
     .bubble.good{background:#e7f8ea;border-color:#1f7a2e;color:#1f5f29;box-shadow:0 0 0 4px rgba(31,122,46,.12)}
     .bubble.bad{background:#ffe6e0;border-color:#b42318;color:#8f1e15;box-shadow:0 0 0 4px rgba(180,35,24,.12)}
 
@@ -1002,6 +1003,35 @@
     font-weight:900 !important;
     flex:0 0 auto !important;
   }
+}
+
+/* === Match right/bottom success equations to left equation size === */
+@media (min-width: 900px){
+  #frame3 .bubble.good .bubble-equation{
+    font-size:1.8rem !important;
+    line-height:1 !important;
+    font-weight:900 !important;
+    white-space:nowrap !important;
+    color:#c62828 !important;
+  }
+  .feedback.good .feedback-equation{
+    font-size:1.8rem !important;
+    line-height:1 !important;
+    font-weight:900 !important;
+    white-space:nowrap !important;
+    vertical-align:middle !important;
+    color:#c62828 !important;
+  }
+}
+
+
+/* === Force success equations to render red (right panel + bottom feedback) === */
+#frame3 .bubble.good .bubble-equation,
+#frame3 .bubble.good .bubble-line.bubble-equation,
+#frame3 .bubble.good .bubble-line.bubble-equation *,
+.feedback.good .feedback-equation,
+.feedback.good .feedback-equation *{
+  color:#c62828 !important;
 }
 
 /* === Maximise desktop width: remove large left/right outer margins === */
@@ -2101,7 +2131,7 @@
         }
         levelTicketResults[currentQuestionNumber - 1] = firstTryOpen ? "correct" : "retry";
         feedback.className = "feedback good";
-        feedback.textContent = `Perfect! ${currentQuestion.shown} + ${currentQuestion.need} = 10.`;
+        feedback.innerHTML = `Perfect! <span class="feedback-equation">${currentQuestion.shown} + ${currentQuestion.need} = 10</span>.`;
         setDeliveryState(
           "good",
           `<div class="bubble-copy"><div class="bubble-line">Chef says: Perfect! Now the tray has <strong>10 eggs</strong>!</div><div class="bubble-line bubble-equation">${currentQuestion.shown} + ${currentQuestion.need} = 10</div></div>`
